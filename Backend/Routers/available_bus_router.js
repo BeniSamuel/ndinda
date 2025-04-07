@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const BusRoute = require('../Models/bus_route_model')
 const BusStop = require('../Models/bus_stop_model')
-const { getBusLocation, updateBusLocation, getNearbyStops, getActiveBuses, deactivateBus } = require('../server.cjs');
+const { getBusLocation, updateBusLocation, getNearbyStops, getActiveBuses, deactivateBus } = require('../server.js');
 
 // The GPS will send data through this endpoint. It'll Update Bus Location.
 router.route('/bus/location').post(async(req, res) => {

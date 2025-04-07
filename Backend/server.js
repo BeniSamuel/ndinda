@@ -4,27 +4,26 @@ const PORT = process.env.PORT||3000
 const BusRoute = require('./Models/bus_route_model')
 const BusStop = require('./Models/bus_stop_model')
 
-import { createClient } from "redis";
+const { createClient } = require('redis')
 
 const redisClient = createClient({
-  url: process.env.UPSTASH_REDIS_URL, // Store the redis://... value here
-  socket: {
-    tls: true, // Important for secure Upstash connections!
-  },
+  url: process.env.UPSTASH_REDIS_URL,
 });
 
-redisClient.on('error', (err) => console.error('Redis Client Error:', err));
+redisClient.on("error", (err) => {
+  console.error("Redis Client Error:", err);
+});
 
 async function connectRedis() {
-    try {
-        await redisClient.connect();
-        console.log("Redis Connected Successfully!");
-    } catch (error) {
-        console.error("Redis Connection Failed:", error);
-    }
+  try {
+    await redisClient.connect();
+    console.log("Redis Connected Successfully!");
+  } catch (error) {
+    console.error("Redis Connection Failed:", error);
+  }
 }
-connectRedis();
 
+connectRedis();
 
 // Bus Location Tracking (Stored in Redis for Real-Time Update)
 async function updateBusLocation(GPSId, latitude, longitude, routeNumber, routeName) {
