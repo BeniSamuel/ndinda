@@ -4,7 +4,7 @@ const PORT = process.env.PORT||3000
 const BusRoute = require('./Models/bus_route_model')
 const BusStop = require('./Models/bus_stop_model')
 
-const getRedisClient = require('./redisClient')
+const getRedisClient = require('./redis-Client')
 
 // Bus Location Tracking (Stored in Redis for Real-Time Update)
 async function updateBusLocation(GPSId, latitude, longitude, routeNumber, routeName) {
