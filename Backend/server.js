@@ -4,11 +4,13 @@ const PORT = process.env.PORT||3000
 const BusRoute = require('./Models/bus_route_model')
 const BusStop = require('./Models/bus_stop_model')
 
-const { createClient } = require('redis');
+import { createClient } from "redis";
 
-const redisClient = createClient({
-  url: process.env.UPSTASH_REDIS_REST_URL, // e.g. 'redis://default:<password>@<host>:<port>'
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+const client = createClient({
+  url: process.env.UPSTASH_REDIS_URL, // Store the redis://... value here
+  socket: {
+    tls: true, // Important for secure Upstash connections!
+  },
 });
 
 redisClient.on('error', (err) => console.error('Redis Client Error:', err));
