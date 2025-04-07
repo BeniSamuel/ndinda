@@ -5,6 +5,7 @@ const BusRoute = require('./Models/bus_route_model')
 const BusStop = require('./Models/bus_stop_model')
 
 const getRedisClient = require('./redis-Client')
+getRedisClient()
 
 // Bus Location Tracking (Stored in Redis for Real-Time Update)
 async function updateBusLocation(GPSId, latitude, longitude, routeNumber, routeName) {
