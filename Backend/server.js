@@ -6,7 +6,7 @@ const BusStop = require('./Models/bus_stop_model')
 
 import { createClient } from "redis";
 
-const client = createClient({
+const redisClient = createClient({
   url: process.env.UPSTASH_REDIS_URL, // Store the redis://... value here
   socket: {
     tls: true, // Important for secure Upstash connections!
