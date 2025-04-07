@@ -10,9 +10,10 @@ const redisClient = createClient({
   url: process.env.UPSTASH_REDIS_URL,
 });
 
-redisClient.on("error", (err) => {
-  console.error("Redis Client Error:", err);
-});
+redisClient.on("error", function(error) {
+    console.error(error);
+    // I report it onto a logging service like Sentry. 
+ });
 
 async function connectRedis() {
   try {
