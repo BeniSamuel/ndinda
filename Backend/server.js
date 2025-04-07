@@ -15,16 +15,7 @@ redisClient.on("error", function(error) {
     // I report it onto a logging service like Sentry. 
  });
 
-async function connectRedis() {
-  try {
-    await redisClient.connect();
-    console.log("Redis Connected Successfully!");
-  } catch (error) {
-    console.error("Redis Connection Failed:", error);
-  }
-}
 
-connectRedis();
 
 // Bus Location Tracking (Stored in Redis for Real-Time Update)
 async function updateBusLocation(GPSId, latitude, longitude, routeNumber, routeName) {
