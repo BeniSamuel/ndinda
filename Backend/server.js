@@ -4,51 +4,21 @@ const PORT = process.env.PORT||3000
 const BusRoute = require('./Models/bus_route_model')
 const BusStop = require('./Models/bus_stop_model')
 
-const { createClient } = require('redis')
-
-const redisClient = createClient({
-  url: process.env.UPSTASH_REDIS_URL,
-  socket: {
-    reconnectStrategy: retries => Math.min(retries * 50, 2000) // exponential backoff
-  }
-});
-
-redisClient.on("error", function(error) {
-    console.error(error);
-    // I report it onto a logging service like Sentry. 
- });
-
- (async () => {
-    try {
-      await redisClient.connect();
-      console.log('Redis Connected');
-    } catch (err) {
-      console.error('Redis Error:', err);
-    }
-  })();
-  
+const getRedisClient = require('./redisClient')
 
 // Bus Location Tracking (Stored in Redis for Real-Time Update)
 async function updateBusLocation(GPSId, latitude, longitude, routeNumber, routeName) {
-    const key = `bus_location:${GPSId}`
-    if (!redisClient.isOpen) {
-        await redisClient.connect();
-      }
-      
+    const redisClient = await getRedisClient()
+    const key = `bus_location:${GPSId}`      
     await redisClient.set(key, JSON.stringify({ latitude, longitude }));
     await redisClient.expire(key, 10);
     await activateBus( GPSId, routeNumber, routeName )
 }
 
 //Activate The Bus Within a particular route number
-
 async function activateBus( GPSId, routeNumber, routeName ) {
+    const redisClient = await getRedisClient();
     const key = `active_buses:${routeNumber}:${routeName}`
-
-    if (!redisClient.isOpen) {
-        await redisClient.connect();
-      }
-      
     // The bus stays active as long as it moves
     await redisClient.sAdd(key, String(GPSId));
     
@@ -57,12 +27,8 @@ async function activateBus( GPSId, routeNumber, routeName ) {
 
 // Deactivate a bus
 async function deactivateBus( GPSId, routeNumber, routeName ) {
+    const redisClient = await getRedisClient();
     const key = `active_buses:${routeNumber}:${routeName}`
-
-    if (!redisClient.isOpen) {
-        await redisClient.connect();
-      }
-      
     await redisClient.sRem(key, String(GPSId))
 }
 
@@ -70,16 +36,13 @@ async function deactivateBus( GPSId, routeNumber, routeName ) {
 // Fetch Bus Location from Redis (Only if the Bus is Active)
 async function getBusLocation(GPSId, routeNumber, routeName) {
     try {
-        const activeKey = `active_buses:${routeNumber}:${routeName}`;
+        const redisClient = await getRedisClient();
 
+        const activeKey = `active_buses:${routeNumber}:${routeName}`;
         const isActive = await redisClient.sIsMember(activeKey, GPSId);
-        
         if (!isActive) throw new Error('Bus is not active');
 
-        const locationKey = `bus_location:${GPSId}`;
-        if (!redisClient.isOpen) {
-            await redisClient.connect();
-          }          
+        const locationKey = `bus_location:${GPSId}`;        
         const data = await redisClient.get(locationKey);
         
         if (!data) throw new Error('Bus location not found');
@@ -93,12 +56,8 @@ async function getBusLocation(GPSId, routeNumber, routeName) {
 
 // Get Active Buses Within a Specific Route Number
 async function getActiveBuses( routeNumber, routeName ) {
+    const redisClient = await getRedisClient();
     const key = `active_buses:${routeNumber}:${routeName}`
-
-    if (!redisClient.isOpen) {
-        await redisClient.connect();
-      }
-      
     const activeBuses = await redisClient.sMembers(key) // Fetch all the GPSIds in the set 
     return activeBuses
 }
