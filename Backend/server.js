@@ -7,7 +7,8 @@ const BusStop = require('./Models/bus_stop_model')
 const { createClient } = require('redis');
 
 const redisClient = createClient({
-  url: process.env.UPSTASH_REDIS_URL, // e.g. 'redis://default:<password>@<host>:<port>'
+  url: process.env.UPSTASH_REDIS_REST_URL, // e.g. 'redis://default:<password>@<host>:<port>'
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
 redisClient.on('error', (err) => console.error('Redis Client Error:', err));
