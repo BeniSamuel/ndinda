@@ -31,6 +31,10 @@ redisClient.on("error", function(error) {
 // Bus Location Tracking (Stored in Redis for Real-Time Update)
 async function updateBusLocation(GPSId, latitude, longitude, routeNumber, routeName) {
     const key = `bus_location:${GPSId}`
+    if (!redisClient.isOpen) {
+        await redisClient.connect();
+      }
+      
     await redisClient.set(key, JSON.stringify({ latitude, longitude }));
     await redisClient.expire(key, 10);
     await activateBus( GPSId, routeNumber, routeName )
@@ -41,6 +45,10 @@ async function updateBusLocation(GPSId, latitude, longitude, routeNumber, routeN
 async function activateBus( GPSId, routeNumber, routeName ) {
     const key = `active_buses:${routeNumber}:${routeName}`
 
+    if (!redisClient.isOpen) {
+        await redisClient.connect();
+      }
+      
     // The bus stays active as long as it moves
     await redisClient.sAdd(key, String(GPSId));
     
@@ -51,6 +59,10 @@ async function activateBus( GPSId, routeNumber, routeName ) {
 async function deactivateBus( GPSId, routeNumber, routeName ) {
     const key = `active_buses:${routeNumber}:${routeName}`
 
+    if (!redisClient.isOpen) {
+        await redisClient.connect();
+      }
+      
     await redisClient.sRem(key, String(GPSId))
 }
 
@@ -65,6 +77,9 @@ async function getBusLocation(GPSId, routeNumber, routeName) {
         if (!isActive) throw new Error('Bus is not active');
 
         const locationKey = `bus_location:${GPSId}`;
+        if (!redisClient.isOpen) {
+            await redisClient.connect();
+          }          
         const data = await redisClient.get(locationKey);
         
         if (!data) throw new Error('Bus location not found');
@@ -80,6 +95,10 @@ async function getBusLocation(GPSId, routeNumber, routeName) {
 async function getActiveBuses( routeNumber, routeName ) {
     const key = `active_buses:${routeNumber}:${routeName}`
 
+    if (!redisClient.isOpen) {
+        await redisClient.connect();
+      }
+      
     const activeBuses = await redisClient.sMembers(key) // Fetch all the GPSIds in the set 
     return activeBuses
 }
