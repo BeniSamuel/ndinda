@@ -4,9 +4,15 @@ const PORT = process.env.PORT||3000
 const BusRoute = require('./Models/bus_route_model')
 const BusStop = require('./Models/bus_stop_model')
 
-const Redis = require("ioredis");
+const { createClient } = require('redis')
 
-let redisClient = new Redis(process.env.UPSTASH_REDIS_URL);
+const redisClient = createClient({
+  url: process.env.UPSTASH_REDIS_URL,
+});
+
+redisClient.on("error", (err) => {
+  console.error("Redis Client Error:", err);
+});
 
 async function connectRedis() {
   try {
