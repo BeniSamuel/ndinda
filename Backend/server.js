@@ -7,11 +7,11 @@ const BusStop = require('./Models/bus_stop_model')
 const { createClient } = require('redis')
 
 const redisClient = createClient({
-  url: process.env.UPSTASH_REDIS_URL,
-  socket: {
-    reconnectStrategy: retries => Math.min(retries * 50, 2000) // exponential backoff
-  }
-});
+    url: process.env.REDIS_URL,
+    socket: {
+      reconnectStrategy: retries => Math.min(retries * 50, 2000)
+    }
+  });  
 
 redisClient.on("error", function(error) {
     console.error(error);
