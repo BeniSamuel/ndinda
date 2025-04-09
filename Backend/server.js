@@ -198,11 +198,11 @@ const busStopRouter = require('./Routers/bus_stops_router')
 const busRouteRouter = require('./Routers/bus_routes_router')
 const availableBusRouter = require('./Routers/available_bus_router')
 
-app.use('/ourfirstservice/account', passengerSignupRouter)
-app.use('/ourfirstservice/account', passengerLoginRouter)
-app.use('/ourfirstservice/admin/dashboard', busStopRouter)
-app.use('/ourfirstservice/admin/dashboard', busRouteRouter)
-app.use('/ourfirstservice', availableBusRouter)
+app.use('/account', passengerSignupRouter)
+app.use('/account', passengerLoginRouter)
+app.use('/admin/dashboard', busStopRouter)
+app.use('/admin/dashboard', busRouteRouter)
+app.use('/', availableBusRouter)
 
 
 app.listen(PORT, ()=> {
