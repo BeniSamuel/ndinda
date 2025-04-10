@@ -42,8 +42,16 @@ router.route("/add-agency").post(async(req, res) => {
     const { agencyName } = req.body
 
     try {
+
+        if (!agencyName || agencyName.trim() === "") {
+            return res.status(400).json({ message: "Agency name is required!" });
+        }
+
         // Check Whether agency already exits!
-        const agency = await Agency.findOne({ agencyName })
+        const agency = await Agency.findOne({
+            agencyName: { $regex: new RegExp(`^${agencyName}$`, 'i') }
+        });
+        
         if(agency) {
             return res.status(400).json({message: "Agency with similar name already exists!"})
         }
