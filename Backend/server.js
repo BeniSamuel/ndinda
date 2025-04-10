@@ -3,6 +3,7 @@ const app = express()
 const PORT = process.env.PORT||3000
 const BusRoute = require('./Models/bus_route_model')
 const BusStop = require('./Models/bus_stop_model')
+const Bus = require('./Models/bus_model')
 
 const { createClient } = require('redis')
 
@@ -38,12 +39,21 @@ async function updateBusLocation(GPSId, latitude, longitude, routeNumber, routeN
 
 //Activate The Bus Within a particular route number
 
-async function activateBus( GPSId, routeNumber, routeName ) {
-    const key = `active_buses:${routeNumber}:${routeName}`
-    // The bus stays active as long as it moves
-    await redisClient.sAdd(key, String(GPSId));
-    
+async function activateBus(GPSId, routeNumber, routeName) {
+    const key = `active_buses:${routeNumber}:${routeName}`;
+
+    const bus = await Bus.findOne({ GPSId }).populate('agencyId', 'agencyName');
+    if (!bus) throw new Error("Bus not found");
+
+    const busData = JSON.stringify({
+        GPSId: bus.GPSId,
+        agencyName: bus.agencyId.agencyName,
+        busPlateNumber: bus.busPlateNumber
+    });
+
+    await redisClient.sAdd(key, busData);
 }
+
 
 
 // Deactivate a bus
@@ -78,7 +88,7 @@ async function getBusLocation(GPSId, routeNumber, routeName) {
 async function getActiveBuses( routeNumber, routeName ) {
     const key = `active_buses:${routeNumber}:${routeName}`      
     const activeBuses = await redisClient.sMembers(key) // Fetch all the GPSIds in the set 
-    return activeBuses
+    return activeBuses.map(busStr => JSON.parse(busStr))
 }
 
 // Check Nearby stops for each specific Bus in a Route Number & Flowasync function getNearbyStops(GPSId, routeNumber, maxDistance = 1000000) {
