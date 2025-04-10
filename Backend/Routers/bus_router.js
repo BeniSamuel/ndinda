@@ -50,7 +50,7 @@ router.route("/add-bus").post(async(req, res) => {
         }
         // Check Whether bus already exits!
         const bus = await Bus.findOne({ agencyId, busPlateNumber })
-        if(!bus) {
+        if(bus) {
             return res.status(400).json({message: "Bus with similar Agency and PlateNumber already exists!"})
         }
 
