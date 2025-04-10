@@ -18,7 +18,7 @@ router.route('/bus/location').post(async(req, res) => {
         // Activate the Bus, such that a passenger can query it by routeNumber and routeName.
         await updateBusLocation(GPSId, latitude, longitude, routeNumber, routeName )
        
-        return res.json({message: "Bus location updated and activated!", messageInteger: 1})
+        return res.json({messageInteger: 1, message: "Bus location updated and activated!"})
 
     } catch (error) {
         return res.status(500).json({message: "Can't activate or update the bus location", error: error.message})
