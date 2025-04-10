@@ -2,7 +2,7 @@ const router = require('express').Router()
 const Bus = require('../Models/bus_model')
 const Agency = require('../Models/agency_model')
 
-router.route('all-buses').get(async(req, res) => {
+router.route('/all-buses').get(async(req, res) => {
     try {
 
         const buses = await Bus.find().populate('agencyId', 'agencyName')
