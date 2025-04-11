@@ -77,7 +77,7 @@ async function getBusLocation(GPSId, routeNumber, routeName) {
 async function getActiveBuses( routeNumber, routeName ) {
     const key = `active_buses:${routeNumber}:${routeName}`      
     const activeBuses = await redisClient.sMembers(key) // Fetch all the GPSIds in the set 
-    return activeBuses
+    return activeBuses.map(busStr => JSON.parse(busStr))
 }
 
 // Check Nearby stops for each specific Bus in a Route Number & Flowasync function getNearbyStops(GPSId, routeNumber, maxDistance = 1000000) {
