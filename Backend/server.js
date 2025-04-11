@@ -86,9 +86,9 @@ async function keepArrivedStop(GPSId, routeNumber, stopNumber) {
     await redisClient.sAdd(key, String(stopNumber))
 }
 
-async function getArrivedStops(GPSId, routeNumber) {
-    const key = `arrived:${GPSId}:${routeNumber}`
-    await redisClient.sMembers(key)
+async function isStopArrived(GPSId, routeNumber, stopNumber) {
+    const key = `arrived:${GPSId}:${routeNumber}`;
+    return await redisClient.sIsMember(key, String(stopNumber));
 }
 
 // Check Nearby stops for each specific Bus in a Route Number & Flowasync function getNearbyStops(GPSId, routeNumber, maxDistance = 1000000) {
@@ -133,7 +133,10 @@ async function getArrivedStops(GPSId, routeNumber) {
             let status = "not nearby";
     
             if(stopData.distance <= 15) {
+
                 status = "Arrived"
+                keepArrivedStop(GPSId, routeNumber, stopData.stopNumber)
+
             } else if (stopData.distance >= 16 && stopData.distance <= 100) {
                 status = "arriving";
             } else if ( stopData.distance >= 101 && stopData.distance <= 400) {
@@ -141,8 +144,8 @@ async function getArrivedStops(GPSId, routeNumber) {
             } else if (stopData.stopNumber < nearestStop.stopNumber) {
                 // This stop comes before the nearest stop → already passed
                 status = "passed";
-            } else if(getArrivedStops(stopData.stopNumber)) {
-                status = "passed"
+            } else if (isStopArrived(GPSId, routeNumber, stopNumber)) {
+                status = "passed";
             }
     
             return {
