@@ -104,7 +104,7 @@ async function getActiveBuses( routeNumber, routeName ) {
                 stop.stopLocation.coordinates[1],
                 stop.stopLocation.coordinates[0]
             );
-    
+        
             return {
                 stop,
                 stopNumber,
@@ -123,8 +123,10 @@ async function getActiveBuses( routeNumber, routeName ) {
     
             if (stopData.distance <= 100) {
                 status = "arriving";
-            } else if (stopData.distance <= 400 && stopData.stopNumber < nearestStop.stopNumber) {
+            } else if (stopData.distance <= 400) {
                 status = "nearby";
+            } else if (stopData.distance <= 100 && stopData.stopNumber < nearestStop.stopNumber) {
+                status = "passed"
             } else if (stopData.stopNumber < nearestStop.stopNumber) {
                 // This stop comes before the nearest stop → already passed
                 status = "passed";
