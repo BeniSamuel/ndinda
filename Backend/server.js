@@ -121,16 +121,16 @@ async function getActiveBuses( routeNumber, routeName ) {
         enrichedStops = enrichedStops.map(stopData => {
             let status = "not nearby";
     
-            if(stopData.distance <= 15) {
+            if (stopData.stopNumber < nearestStop.stopNumber) {
+                // This stop comes before the nearest stop → already passed
+                status = "passed";
+            } else if(stopData.distance <= 15) {
                 status = "Arrived"
             } else if (stopData.distance >= 16 && stopData.distance <= 100) {
                 status = "arriving";
             } else if ( stopData.distance >= 101 && stopData.distance <= 400) {
                 status = "nearby";
-            } else if (stopData.stopNumber < nearestStop.stopNumber) {
-                // This stop comes before the nearest stop → already passed
-                status = "passed";
-            }
+            } 
     
             return {
                 stop: stopData.stop,
