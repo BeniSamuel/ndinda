@@ -14,7 +14,7 @@ router.route('/bus/location').post(async(req, res) => {
         if(!busRoute) {
             return res.status(400).json({message: `Route ${routeNumber} ${routeName} Doesn't Exist!`})
         }
-
+//comment
         // Activate the Bus, such that a passenger can query it by routeNumber and routeName.
         await updateBusLocation(GPSId, latitude, longitude, routeNumber, routeName )
        
