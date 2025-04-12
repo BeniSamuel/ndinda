@@ -130,20 +130,31 @@ async function isStopArrived(GPSId, routeNumber, cacheStopNumber) {
         const nearestStop = sortedByDistance[0];
     
         enrichedStops = await Promise.all(enrichedStops.map(async stopData => {
-            let status = "not nearby";
-            let cacheStopNumber = stopData.stopNumber;
+            const cacheStopNumber = stopData.stopNumber;
+            const isCached = await isStopArrived(GPSId, routeNumber, cacheStopNumber);
         
-            if (stopData.distance <= 15) {
-                status = "Arrived";
-                await keepArrivedStop(GPSId, routeNumber, cacheStopNumber);
-            } else if (stopData.distance >= 16 && stopData.distance <= 100) {
-                status = "arriving";
-            } else if (stopData.distance >= 101 && stopData.distance <= 400) {
-                status = "nearby";
-            } else if (stopData.stopNumber < nearestStop.stopNumber) {
+            let status;
+        
+            if (isCached) {
+                // If already cached, it's a passed stop
                 status = "passed";
-            } else if (await isStopArrived(GPSId, routeNumber, cacheStopNumber)) {
-                status = "passed";
+            } else {
+                // Not cached, evaluate distance
+                const distance = stopData.distance;
+        
+                if (distance <= 15) {
+                    status = "Arrived";
+                    await keepArrivedStop(GPSId, routeNumber, cacheStopNumber);
+                } else if (distance <= 100) {
+                    status = "arriving";
+                } else if (distance <= 400) {
+                    status = "nearby";
+                } else if (cacheStopNumber < nearestStop.stopNumber) {
+                    // Comes before nearest (i.e., already passed)
+                    status = "passed";
+                } else {
+                    status = "not nearby";
+                }
             }
         
             return {
@@ -153,7 +164,8 @@ async function isStopArrived(GPSId, routeNumber, cacheStopNumber) {
                 distance: stopData.distance,
                 status
             };
-        }));        
+        }));
+                
     
         return enrichedStops;
     }
