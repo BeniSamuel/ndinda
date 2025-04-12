@@ -81,14 +81,14 @@ async function getActiveBuses( routeNumber, routeName ) {
 }
 
 // Keep A stop with arrived message
-async function keepArrivedStop(GPSId, routeNumber, stopNumber) {
+async function keepArrivedStop(GPSId, routeNumber, cacheStopNumber) {
     const key = `arrived:${GPSId}:${routeNumber}`
-    await redisClient.sAdd(key, String(stopNumber))
+    await redisClient.sAdd(key, String(cacheStopNumber))
 }
 
-async function isStopArrived(GPSId, routeNumber, stopNumber) {
+async function isStopArrived(GPSId, routeNumber, cacheStopNumber) {
     const key = `arrived:${GPSId}:${routeNumber}`;
-    return await redisClient.sIsMember(key, String(stopNumber));
+    return await redisClient.sIsMember(key, String(cacheStopNumber));
 }
 
 // Check Nearby stops for each specific Bus in a Route Number & Flowasync function getNearbyStops(GPSId, routeNumber, maxDistance = 1000000) {
@@ -129,25 +129,23 @@ async function isStopArrived(GPSId, routeNumber, stopNumber) {
         const sortedByDistance = [...enrichedStops].sort((a, b) => a.distance - b.distance);
         const nearestStop = sortedByDistance[0];
     
-        enrichedStops = enrichedStops.map(stopData => {
+        enrichedStops = await Promise.all(enrichedStops.map(async stopData => {
             let status = "not nearby";
-    
-            if(stopData.distance <= 15) {
-
-                status = "Arrived"
-                keepArrivedStop(GPSId, routeNumber, stopData.stopNumber)
-
+            let cacheStopNumber = stopData.stopNumber;
+        
+            if (stopData.distance <= 15) {
+                status = "Arrived";
+                await keepArrivedStop(GPSId, routeNumber, cacheStopNumber);
             } else if (stopData.distance >= 16 && stopData.distance <= 100) {
                 status = "arriving";
-            } else if ( stopData.distance >= 101 && stopData.distance <= 400) {
+            } else if (stopData.distance >= 101 && stopData.distance <= 400) {
                 status = "nearby";
             } else if (stopData.stopNumber < nearestStop.stopNumber) {
-                // This stop comes before the nearest stop → already passed
                 status = "passed";
-            } else if (isStopArrived(GPSId, routeNumber, stopNumber)) {
+            } else if (await isStopArrived(GPSId, routeNumber, cacheStopNumber)) {
                 status = "passed";
             }
-    
+        
             return {
                 stop: stopData.stop,
                 stopNumber: stopData.stopNumber,
@@ -155,7 +153,7 @@ async function isStopArrived(GPSId, routeNumber, stopNumber) {
                 distance: stopData.distance,
                 status
             };
-        });
+        }));        
     
         return enrichedStops;
     }
