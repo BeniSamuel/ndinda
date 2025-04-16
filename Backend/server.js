@@ -49,9 +49,9 @@ async function activateBus( GPSId, routeNumber, routeName ) {
 async function deactivateBus( GPSId, routeNumber, routeName, cacheStopNumber ) {
     const key = `active_buses:${routeNumber}:${routeName}`
     const secondKey = `arrived:${GPSId}:${routeNumber}`
-    
+
     await redisClient.sRem(key, String(GPSId))
-    await redisClient.sRem(secondKye, String(cacheStopNumber))
+    await redisClient.sRem(secondKey, String(cacheStopNumber))
 }
 
 // Fetch Bus Location from Redis
