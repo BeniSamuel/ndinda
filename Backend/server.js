@@ -44,6 +44,16 @@ async function activateBus( GPSId, routeNumber, routeName ) {
     await redisClient.sAdd(key, String(GPSId));
 }
 
+// Keep A stop with arrived message
+async function keepArrivedStop(GPSId, routeNumber, cacheStopNumber) {
+    const key = `arrived:${GPSId}:${routeNumber}`
+    await redisClient.sAdd(key, String(cacheStopNumber))
+}
+
+async function isStopArrived(GPSId, routeNumber, cacheStopNumber) {
+    const key = `arrived:${GPSId}:${routeNumber}`;
+    return await redisClient.sIsMember(key, String(cacheStopNumber));
+}
 
 // Deactivate a bus
 async function deactivateBus( GPSId, routeNumber, routeName, cacheStopNumber ) {
@@ -81,17 +91,6 @@ async function getActiveBuses( routeNumber, routeName ) {
     const key = `active_buses:${routeNumber}:${routeName}`      
     const activeBuses = await redisClient.sMembers(key) // Fetch all the GPSIds in the set 
     return activeBuses.map(busStr => JSON.parse(busStr))
-}
-
-// Keep A stop with arrived message
-async function keepArrivedStop(GPSId, routeNumber, cacheStopNumber) {
-    const key = `arrived:${GPSId}:${routeNumber}`
-    await redisClient.sAdd(key, String(cacheStopNumber))
-}
-
-async function isStopArrived(GPSId, routeNumber, cacheStopNumber) {
-    const key = `arrived:${GPSId}:${routeNumber}`;
-    return await redisClient.sIsMember(key, String(cacheStopNumber));
 }
 
 // Check Nearby stops for each specific Bus in a Route Number & Flowasync function getNearbyStops(GPSId, routeNumber, maxDistance = 1000000) {
