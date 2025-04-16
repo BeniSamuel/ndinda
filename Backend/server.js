@@ -58,10 +58,10 @@ async function isStopArrived(GPSId, routeNumber, cacheStopNumber) {
 // Deactivate a bus
 async function deactivateBus( GPSId, routeNumber, routeName, cacheStopNumber ) {
     const key = `active_buses:${routeNumber}:${routeName}`
-    const secondKey = `arrived:${GPSId}:${routeNumber}`
+    const arrivedStopsKey = `arrived:${GPSId}:${routeNumber}`
 
     await redisClient.sRem(key, String(GPSId))
-    await redisClient.sRem(secondKey, String(cacheStopNumber))
+    await redisClient.del(arrivedStopsKey)
 }
 
 // Fetch Bus Location from Redis
