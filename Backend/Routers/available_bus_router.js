@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const BusRoute = require('../Models/bus_route_model')
 const BusStop = require('../Models/bus_stop_model')
+const BusDeactivated = require('../Models/bus_deactivated_model.js')
+const BusActivated = require('../Models/bus_activated_model.js')
 const { getBusLocation, updateBusLocation, getNearbyStops, getActiveBuses, deactivateBus } = require('../server.js');
 
 // The GPS will send data through this endpoint. It'll Update Bus Location.
@@ -14,7 +16,9 @@ router.route('/bus/location').post(async(req, res) => {
         if(!busRoute) {
             return res.status(400).json({message: `Route ${routeNumber} ${routeName} Doesn't Exist!`})
         }
-//comment
+
+        await new BusActivated({ GPSId, routeNumber, routeName }).save()
+
         // Activate the Bus, such that a passenger can query it by routeNumber and routeName.
         await updateBusLocation(GPSId, latitude, longitude, routeNumber, routeName )
        
@@ -65,6 +69,7 @@ router.route('/all-stops-in-route/:routeNumber/:routeName/:GPSId').get(async(req
 router.route('/bus/deactivate').post(async (req, res) => {
     try {
         const { GPSId, routeNumber, routeName } = req.body;
+        await new BusDeactivated({ GPSId, routeNumber, routeName }).save()
         await deactivateBus(GPSId, routeNumber, routeName );
         return res.json({ message: 'Bus deactivated successfully' });
     } catch (error) {
