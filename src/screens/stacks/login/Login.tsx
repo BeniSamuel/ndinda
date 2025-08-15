@@ -19,16 +19,18 @@ const { height, width } = Dimensions.get("window");
 
 const Login = () => {
   const navigation = useNavigation();
-  const [ formData, setFormData ] = useState<User>();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const handleFormSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleFormSubmit = async () => {
     try {
-
+      navigation.navigate("Tabs");
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -47,7 +49,7 @@ const Login = () => {
             placeholder="Enter Email"
             placeholderTextColor={"#BCC5D2"}
             style={styles.input_field}
-            onChange={() => setFormData({...formData, email: })}
+            onChangeText={(text) => setFormData({ ...formData, email: text })}
           />
           <TextInput
             placeholder="Enter Password"
@@ -58,7 +60,7 @@ const Login = () => {
           <View style={styles.forgot_div}>
             <Text style={styles.forgot_password}>Forgot Password?</Text>
           </View>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={handleFormSubmit}>
             <Text style={styles.button_text}>Login</Text>
           </TouchableOpacity>
         </View>
