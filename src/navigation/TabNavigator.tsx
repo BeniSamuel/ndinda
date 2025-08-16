@@ -10,8 +10,13 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: "#FFFFFF",
+          borderTopWidth: 0,
+          elevation: 0
+        },
         tabBarLabelStyle: { fontFamily: "poppins-medium" },
         tabBarActiveTintColor: "#00CC99",
         tabBarIcon: ({ focused, size }) => {
@@ -30,8 +35,8 @@ const TabNavigator = () => {
               break;
             case "Profile":
               icon = focused
-                ? require("../../assets/common/favorite-active-icon.png")
-                : require("../../assets/common/favorite-inactive-icon.png");
+                ? require("../../assets/common/profile-active-icon.png")
+                : require("../../assets/common/profile-inactive-icon.png");
               break;
             case "Settings":
               icon = focused
@@ -50,7 +55,7 @@ const TabNavigator = () => {
             />
           );
         },
-      }}
+      })}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Notification" component={Notification} />
