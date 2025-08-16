@@ -38,6 +38,6 @@ const styles = StyleSheet.create({
   },
   container_2: {
     backgroundColor: "#F9FAFF",
-    flex: 1
+    flex: 1,
   },
 });
