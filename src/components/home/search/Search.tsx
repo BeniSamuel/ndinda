@@ -52,23 +52,23 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: 12,
-    zIndex: 12
+    zIndex: 12,
   },
   label_text: {
     fontFamily: "poppins-medium",
-    color: "#004B39"
+    color: "#004B39",
   },
   input_text: {
-    fontFamily: "poppins-regular"
+    fontFamily: "poppins-regular",
   },
   input_container: {
     borderColor: "#9BACD859",
-    borderWidth: 2,
+    borderWidth: 1,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: width * 0.025,
     gap: 8,
-    borderRadius: 12
-  }
+    borderRadius: 12,
+  },
 });
