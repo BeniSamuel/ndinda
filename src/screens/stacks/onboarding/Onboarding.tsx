@@ -18,8 +18,8 @@ const Onboarding = () => {
   const navigation = useNavigation();
 
   const handleClick = () => {
-    navigation.navigate("Login")
-  }
+    navigation.navigate("Login");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: height * 0.045,
-    backgroundColor: "#F9FAFF"
+    backgroundColor: "#F9FAFF",
   },
   image_container: {
     display: "flex",
@@ -80,22 +80,22 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "poppins-semibold",
     fontSize: 18,
-    textAlign: "center"
+    textAlign: "center",
   },
   content: {
     fontFamily: "poppins-medium",
     lineHeight: 22,
     textAlign: "center",
-    color: "#46444499"
+    color: "#46444499",
   },
   button: {
     backgroundColor: "#00CC99",
     paddingVertical: height * 0.015,
     display: "flex",
     flexDirection: "column",
-    alignItems: "center", 
+    alignItems: "center",
     justifyContent: "center",
-    borderRadius: 30
+    borderRadius: 30,
   },
   button_text: {
     color: "white",
@@ -103,5 +103,5 @@ const styles = StyleSheet.create({
   },
   button_container: {
     paddingHorizontal: width * 0.09,
-  }
+  },
 });
