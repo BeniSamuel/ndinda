@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   inform: {
     fontFamily: "poppins-medium",
     color: "#6f6b6bff",
-    fontSize: 15
+    fontSize: 15,
   },
   button: {
     backgroundColor: "#00CC99",
@@ -63,6 +63,6 @@ const styles = StyleSheet.create({
   inform_container: {
     display: "flex",
     flexDirection: "column",
-    gap: 12
-  }
+    gap: 12,
+  },
 });
