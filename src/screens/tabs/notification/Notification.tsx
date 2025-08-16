@@ -1,11 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import TabLayout from '../../../layout/TabLayout'
 
 const Notification = () => {
   return (
-    <View>
-      <Text>Notification</Text>
-    </View>
+    <TabLayout screen_name='Notification'>
+      <View>
+        <Text>Not</Text>
+      </View>
+    </TabLayout>
   )
 }
 
