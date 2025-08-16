@@ -15,7 +15,7 @@ const App = () => {
     "poppins-bold": require("./assets/fonts/Poppins-Bold.ttf"),
     "poppins-semibold": require("./assets/fonts/Poppins-SemiBold.ttf"),
     "poppins-extrabold": require("./assets/fonts/Poppins-ExtraBold.ttf"),
-  })
+  });
 
   useEffect(() => {
     const hideSplashScreen = async () => {
@@ -30,7 +30,7 @@ const App = () => {
   if (!fontsLoaded) {
     return null;
   }
-  
+
   return (
     <NavigationContainer>
       <RootNavigator />
