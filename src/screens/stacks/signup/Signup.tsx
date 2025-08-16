@@ -83,7 +83,6 @@ export default Signup;
 const styles = StyleSheet.create({
   container: {
     paddingTop: Platform.OS === "android" ? height * 0.035 : null,
-    // backgroundColor: "red",
     flex: 1,
     paddingHorizontal: width * 0.035,
   },
