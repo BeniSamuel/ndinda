@@ -4,3 +4,5 @@ type Stop = {
   details: string;
   bus_id: number;
 };
+
+export default Stop;
