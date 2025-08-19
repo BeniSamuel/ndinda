@@ -28,7 +28,7 @@ const TabLayout: React.FC<TabLayoutProp> = ({
     <SafeAreaView style={styles.container}>
       <StatusBar />
       <Header screen_name={screen_name} image={image} />
-      <View>{children}</View>
+      <View style={styles.child_layout}>{children}</View>
     </SafeAreaView>
   );
 };
@@ -37,6 +37,10 @@ export default TabLayout;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Platform.OS === "android" ? height * 0.035 : null,
+    // paddingTop: Platform.OS === "android" ? height * 0.035 : null,
+    height: height
+  },
+  child_layout: {
+    flex: 1,
   },
 });
