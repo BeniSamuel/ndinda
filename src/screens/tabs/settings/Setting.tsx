@@ -1,11 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import TabLayout from "../../../layout/TabLayout";
 
 const Setting = () => {
   return (
-    <View>
-      <Text>Setting</Text>
-    </View>
+    <TabLayout
+      screen_name="Settings"
+      image={require("../../../../assets/onboarding/user-profile-image.png")}
+    >
+      <View>
+        <Text>Settings</Text>
+      </View>
+    </TabLayout>
   );
 };
 
