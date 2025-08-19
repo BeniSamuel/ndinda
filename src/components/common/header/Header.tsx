@@ -1,24 +1,42 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ImageSourcePropType, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  ImageSourcePropType,
+  Dimensions,
+  Platform,
+} from "react-native";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const { height, width } = Dimensions.get("window");
 
 type HeaderProp = {
   screen_name?: string;
-  image?: ImageSourcePropType
+  image?: ImageSourcePropType;
 };
 
 const Header: React.FC<HeaderProp> = ({ screen_name, image }) => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
-      <View>
-        <TouchableOpacity>
-          <Image source={require("../../../../assets/common/left-arrow-icon.png")}/>
+      <View style={styles.screen_options}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
+          <Image
+            source={require("../../../../assets/common/left-arrow-icon.png")}
+          />
         </TouchableOpacity>
-        <Text>{screen_name}</Text>
+        <Text style={styles.screen_name}>{screen_name}</Text>
       </View>
       <View>
-        <Image source={image} />
+        <Image source={image} style={styles.image} />
       </View>
     </View>
   );
@@ -33,6 +51,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.035,
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between"
-  }
+    justifyContent: "space-between",
+    paddingTop: Platform.OS === "android" ? height * 0.055 : null,
+    flexDirection: "row",
+  },
+  screen_options: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 12,
+    alignItems: "center",
+  },
+  image: {
+    width: 37,
+    height: 35,
+  },
+  screen_name: {
+    fontFamily: "poppins-medium",
+    color: "white",
+  },
 });
