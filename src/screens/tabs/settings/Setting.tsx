@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import TabLayout from "../../../layout/TabLayout";
+import Display from "../../../components/settings/Display";
+import Others from "../../../components/settings/Others";
 
 const Setting = () => {
   return (
@@ -9,7 +11,8 @@ const Setting = () => {
       image={require("../../../../assets/onboarding/user-profile-image.png")}
     >
       <View>
-        <Text>Settings</Text>
+        <Display />
+        <Others />
       </View>
     </TabLayout>
   );
