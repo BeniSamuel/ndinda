@@ -47,12 +47,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   find_button: {
-    paddingHorizontal: width * 0.035,
-    paddingVertical: height * 0.035,
+    paddingHorizontal: width * 0.15,
+    paddingVertical: height * 0.015,
     borderRadius: 12,
     backgroundColor: "#00CC99",
   },
   find_button_text: {
     fontFamily: "poppins-medium",
+    color: "white",
   },
 });
