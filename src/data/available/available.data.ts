@@ -6,7 +6,7 @@ const available_buses: Bus[] = [
     company_name: "Yahoo Car",
     plate_number: "RAB904X",
     journey_number: 105,
-    journey_details: "Kimisange-Gikondo-DownTown",
+    journey_details: "Kimisange-Gikondo",
   },
   {
     id: 2,
