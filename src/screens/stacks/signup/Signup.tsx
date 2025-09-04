@@ -8,16 +8,34 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import ContinueWith from "../../../components/common/continue-with/ContinueWith";
 import LogOptions from "../../../components/common/log-options/LogOptions";
 import { useNavigation } from "@react-navigation/native";
+import authService from "../../../service/auth/auth.service";
 
 const { height, width } = Dimensions.get("window");
 
 const Signup = () => {
   const navigation = useNavigation();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const handleFormSubmit = async () => {
+    try {
+      const response = await authService.handleSignup(formData);
+
+      if (response) {
+        navigation.navigate("Login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,20 +54,29 @@ const Signup = () => {
             placeholder="Enter Username"
             placeholderTextColor={"#BCC5D2"}
             style={styles.input_field}
+            onChangeText={(text) => {
+              setFormData({ ...formData, name: text });
+            }}
           />
           <TextInput
             placeholder="Enter Email"
             placeholderTextColor={"#BCC5D2"}
             style={styles.input_field}
+            onChangeText={(text) => {
+              setFormData({ ...formData, email: text });
+            }}
           />
           <TextInput
             placeholder="Enter Password"
             placeholderTextColor={"#BCC5D2"}
             style={styles.input_field}
             secureTextEntry={true}
+            onChangeText={(text) => {
+              setFormData({ ...formData, password: text });
+            }}
           />
           <View style={styles.button_container}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={handleFormSubmit}>
               <Text style={styles.button_text}>Signup</Text>
             </TouchableOpacity>
           </View>
