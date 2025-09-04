@@ -1,36 +1,60 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Bus from "../../../types/bus/bus.type";
 import dimension from "../../../theme/dimension.theme";
 import { lightTheme } from "../../../theme/color.theme";
+import StopContainer from "./StopContainer";
 
 const BusCard: React.FC<Bus> = (props) => {
+  const [hide, setHide] = useState(true);
+
+  const handleShowStops = () => {
+    setHide(!hide);
+  };
+
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          flexDirection: hide ? "row" : "column",
+          alignItems: hide ? "center" : "flex-start",
+        },
+      ]}
+    >
       <View style={styles.right_wing}>
-        <View>
-          <Image
-            source={require("../../../../assets/home/bus-icon.png")}
-            style={styles.image}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={styles.content_container}>
+        <Image
+          source={require("../../../../assets/home/bus-icon.png")}
+          style={styles.image}
+          resizeMode="contain"
+        />
+        <View
+          style={[
+            styles.content_container,
+            { flexDirection: hide ? "column" : "row", gap: hide ? 0 : 20 },
+          ]}
+        >
           <View>
             <Text style={styles.company_name}>{props.company_name}</Text>
             <Text style={styles.plate_number}>Plate: {props.plate_number}</Text>
           </View>
           <View>
             <Text style={styles.journey_number}>{props.journey_number}: </Text>
-            <Text style={styles.journey_description}>
+            <Text style={styles.journey_description} >
               {props.journey_details}
             </Text>
           </View>
         </View>
       </View>
-      <View>
-        <TouchableOpacity>
-          <Text style={styles.stop_button_text}>View Stops</Text>
+
+      {/* Conditionally show stops */}
+      {!hide && <StopContainer bus_id={props.id} />}
+
+      <View style={{ width: hide ? "23%" : "100%", alignItems: "flex-end" }}>
+        <TouchableOpacity onPress={handleShowStops}>
+          <Text style={styles.stop_button_text}>
+            {hide ? "View Stops" : "Hide Stops"}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -41,18 +65,14 @@ export default BusCard;
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: dimension.width * 0.035,
     paddingVertical: dimension.height * 0.016,
     borderWidth: 2,
     borderColor: "#CCCCCC",
     borderRadius: 12,
-    alignItems: "center",
   },
   right_wing: {
-    display: "flex",
     flexDirection: "row",
     gap: 12,
     alignItems: "center",
@@ -62,16 +82,15 @@ const styles = StyleSheet.create({
     width: 30,
   },
   content_container: {
-    display: "flex",
     flexDirection: "column",
-    gap: 10,
+    gap: 2,
   },
   company_name: {
     fontFamily: "poppins-semibold",
   },
   plate_number: {
     fontFamily: "poppins-regular",
-    color: "#076e55c3"
+    color: "#076e55c3",
   },
   journey_number: {
     fontFamily: "poppins-medium",
@@ -81,6 +100,6 @@ const styles = StyleSheet.create({
   },
   stop_button_text: {
     color: lightTheme.green_color,
-    fontFamily: "poppins-medium"
-  }
+    fontFamily: "poppins-medium",
+  },
 });
