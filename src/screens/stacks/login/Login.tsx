@@ -13,7 +13,8 @@ import { StatusBar } from "expo-status-bar";
 import ContinueWith from "../../../components/common/continue-with/ContinueWith";
 import LogOptions from "../../../components/common/log-options/LogOptions";
 import { useNavigation } from "@react-navigation/native";
-import User from "../../../types/user/user.type";
+import authService from "../../../service/auth/auth.service";
+import { useUserStore } from "../../../store/user/user.store";
 
 const { height, width } = Dimensions.get("window");
 
@@ -26,6 +27,9 @@ const Login = () => {
 
   const handleFormSubmit = async () => {
     try {
+      const user = await authService.handleLogin(formData);
+      useUserStore.getState().setUser(user);
+
       navigation.navigate("Tabs");
     } catch (error) {
       console.log(error);
@@ -56,6 +60,9 @@ const Login = () => {
             placeholderTextColor={"#BCC5D2"}
             style={styles.input_field}
             secureTextEntry={true}
+            onChangeText={(text) =>
+              setFormData({ ...formData, password: text })
+            }
           />
           <View style={styles.forgot_div}>
             <Text style={styles.forgot_password}>Forgot Password?</Text>
