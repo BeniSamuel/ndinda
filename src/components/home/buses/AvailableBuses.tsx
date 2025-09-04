@@ -1,11 +1,14 @@
 import { Dimensions, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import available_buses from "../../../data/available/available.data";
+import BusContainer from "./BusContainer";
+import { useExpansionStore } from "../../../store/layout/expansion.store";
 
 const { height, width } = Dimensions.get("window");
 
 const AvailableBuses = () => {
-  const [expand, setExpand] = useState<boolean>(false);
+  const maximize = useExpansionStore((state) => state.maximize);
+
   return (
     <View style={styles.container}>
       <View style={styles.header_container}>
@@ -13,10 +16,10 @@ const AvailableBuses = () => {
         <Text
           style={styles.expand_option}
           onPress={() => {
-            setExpand(!expand);
+            useExpansionStore.getState().setMaximize(!maximize);
           }}
         >
-          {expand ? "Minimize -" : "Expand +"}
+          {maximize ? "Minimize -" : "Expand +"}
         </Text>
       </View>
       {available_buses.length == 0 ? (
@@ -26,7 +29,7 @@ const AvailableBuses = () => {
           </Text>
         </View>
       ) : (
-        <View></View>
+        <BusContainer />
       )}
     </View>
   );
@@ -42,6 +45,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 40,
     paddingVertical: height * 0.035,
     paddingHorizontal: width * 0.035,
+
   },
   container_title: {
     fontFamily: "poppins-medium",
