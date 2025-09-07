@@ -5,31 +5,79 @@ import {
   TextInput,
   View,
   Image,
+  FlatList,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import dimension from "../../../theme/dimension.theme";
+import searchService from "../../../service/search-service/search.service";
 
 const { height, width } = Dimensions.get("window");
 
 const Search = () => {
   const [search, setSearch] = useState("");
+  const [visibility, setVisibility] = useState<boolean>(false);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+
+  useEffect(() => {
+    const handleSearchService = async () => {
+      if (!search.trim()) {
+        setSearchResults([]);
+        setVisibility(false);
+        return;
+      }
+
+      try {
+        const results = await searchService.searchByRouteNumber(search);
+        setSearchResults(results || []);
+        setVisibility(true); // show results as soon as we get them
+      } catch (err) {
+        console.log("Error fetching search:", err);
+        setSearchResults([]);
+        setVisibility(false);
+      }
+    };
+
+    handleSearchService();
+  }, [search]);
 
   return (
     <View style={styles.container}>
       <View>
         <Text style={styles.label_text}>Which Bus Are You Going To Take?</Text>
       </View>
+
       <View style={styles.input_container}>
         <Image source={require("../../../../assets/home/search-icon.png")} />
         <TextInput
           placeholder="Search by RouteNumber..."
           placeholderTextColor={"#BCC5D2"}
-          onChangeText={(text) => {
-            setSearch(text);
-          }}
+          onChangeText={(text) => setSearch(text)}
           value={search}
           style={styles.input_text}
         />
       </View>
+
+      {visibility && (
+        <View style={styles.search_result_container}>
+          <View style={styles.search_response}>
+            {searchResults.length > 0 ? (
+              <FlatList
+                data={searchResults}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <Text style={{ fontFamily: "poppins-regular" }}>
+                    {item.routeNumber} - {item.routeName}
+                  </Text>
+                )}
+              />
+            ) : (
+              <Text style={{ fontFamily: "poppins-regular" }}>
+                No routes found for "{search}"
+              </Text>
+            )}
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -60,6 +108,7 @@ const styles = StyleSheet.create({
   },
   input_text: {
     fontFamily: "poppins-regular",
+    flex: 1,
   },
   input_container: {
     borderColor: "#9BACD859",
@@ -70,5 +119,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.025,
     gap: 8,
     borderRadius: 12,
+  },
+  search_result_container: {
+    position: "relative",
+    backgroundColor: "green",
+    height: dimension.height * 0.045,
+  },
+  search_response: {
+    backgroundColor: "#FFFDFD",
+    height: dimension.height * 0.2,
+    position: "absolute",
+    top: 0,
+    width: dimension.width * 0.76,
+    padding: 8,
   },
 });
