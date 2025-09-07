@@ -3,6 +3,7 @@ import RootNavigator from "./src/navigation/RootNavigator";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
+import Toast from "react-native-toast-message";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,6 +35,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <RootNavigator />
+      <Toast />
     </NavigationContainer>
   );
 };
